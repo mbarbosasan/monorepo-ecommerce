@@ -1,0 +1,18 @@
+### Buscar todos os produtos
+
+GET http://localhost:8080/produtos
+
+### Buscar um produto por id
+
+GET http://localhost:8080/produtos/1
+
+### Salvar um produto
+
+POST http://localhost:8080/produtos
+Content-Type: application/json
+
+{
+    "nome": "Produto 1",
+    "descricao": "Descrição do produto 1",
+    "preco": 100.00
+}
