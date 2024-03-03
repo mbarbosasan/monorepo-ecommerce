@@ -14,5 +14,16 @@ Content-Type: application/json
 {
     "nome": "Produto 1",
     "descricao": "Descrição do produto 1",
-    "preco": 100.00
+    "preco": 100.00,
+    "quantidade": "10"
+}
+
+### Criar carrinho de pedidos
+
+POST http://localhost:8080/carrinho
+Content-Type: application/json
+
+{
+  "idCliente": 1,
+  "idsProdutos": [1,2,3]
 }

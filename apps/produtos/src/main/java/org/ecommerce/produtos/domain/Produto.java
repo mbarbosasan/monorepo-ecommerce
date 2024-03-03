@@ -13,15 +13,27 @@ public class Produto {
     @Column
     private String nome;
     @Column
-    private String descricao;
-
-
+    private Double preco;
+    @Column
+    private Double quantidade = null;
     public Produto() {
     }
 
-    public Produto(String nome, String descricao) {
+    public Produto(String nome, Double preco, Double quantidade) {
         this.nome = nome;
-        this.descricao = descricao;
+        this.preco = preco;
+        this.quantidade = quantidade;
+    }
+
+    public Produto(Long id, String nome, Double preco) {
+        this.id = id;
+        this.nome = nome;
+        this.preco = preco;
+    }
+
+    public Produto(String nome, Double preco) {
+        this.nome = nome;
+        this.preco = preco;
     }
 
     public Long getId() {
@@ -40,12 +52,20 @@ public class Produto {
         this.nome = nome;
     }
 
-    public String getDescricao() {
-        return descricao;
+    public Double getPreco() {
+        return preco;
     }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
+    public void setPreco(Double preco) {
+        this.preco = preco;
+    }
+
+    public Double getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(Double quantidade) {
+        this.quantidade = quantidade;
     }
 
     @Override
@@ -66,7 +86,8 @@ public class Produto {
         return "Produto{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
-                ", descricao='" + descricao + '\'' +
+                ", preco=" + preco +
+                ", quantidade=" + quantidade +
                 '}';
     }
 }
