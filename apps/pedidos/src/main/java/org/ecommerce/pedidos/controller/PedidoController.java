@@ -22,7 +22,6 @@ public class PedidoController {
 
     @PostMapping("{id}")
     public ResponseEntity criarPedido(@PathVariable("id") Long id) {
-
         try {
             this.pedidoService.criarPedido(id);
             return ResponseEntity.status(HttpStatus.CREATED).build();

@@ -6,6 +6,7 @@ import org.ecommerce.pedidos.dtos.CarrinhoDTO;
 import org.ecommerce.pedidos.enums.StatusPedido;
 import org.ecommerce.pedidos.exceptions.CarrinhoJaTemPedidoException;
 import org.ecommerce.pedidos.exceptions.CarrinhoNaoEncontradoException;
+import org.ecommerce.pedidos.rabbitmq.QueueSender;
 import org.ecommerce.pedidos.repository.PedidoRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -20,18 +21,20 @@ import java.net.http.HttpResponse;
 public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
+    private final QueueSender queueSender;
 
-    public PedidoService(PedidoRepository pedidoRepository) {
+    public PedidoService(PedidoRepository pedidoRepository, QueueSender queueSender) {
         this.pedidoRepository = pedidoRepository;
+        this.queueSender = queueSender;
     }
 
     public void criarPedido(Long id) throws CarrinhoNaoEncontradoException, CarrinhoJaTemPedidoException {
         try {
             CarrinhoDTO carrinho = buscaCarrinhoPorId(id);
             Pedido pedido = new Pedido(carrinho.getId(), carrinho.getIdCliente(), StatusPedido.AGUARDANDO_PAGAMENTO);
-
             try {
                 pedidoRepository.save(pedido);
+                enviarParaPagamento(carrinho);
             } catch (DataIntegrityViolationException e) {
                 throw new CarrinhoJaTemPedidoException("Erro ao salvar pedido");
             }
@@ -58,5 +61,16 @@ public class PedidoService {
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void enviarParaPagamento(CarrinhoDTO carrinhoDTO) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            String carrinhoJSON = mapper.writeValueAsString(carrinhoDTO);
+            this.queueSender.send(carrinhoJSON);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
