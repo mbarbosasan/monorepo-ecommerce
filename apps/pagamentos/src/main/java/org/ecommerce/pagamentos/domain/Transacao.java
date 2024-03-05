@@ -6,7 +6,7 @@ import org.ecommerce.pagamentos.enums.StatusPagamento;
 import java.util.Objects;
 
 @Entity
-public class Transacoes {
+public class Transacao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,20 +15,26 @@ public class Transacoes {
     @Column(nullable = false, unique = true)
     private Long id_pedido;
     @Column(nullable = false, unique = true)
-    private Long id_carinho;
+    private Long id_carrinho;
     @Column(nullable = false)
     private StatusPagamento status;
     @Column(nullable = false)
     private Double valor;
 
-    public Transacoes() {
+    public Transacao() {
     }
 
-    public Transacoes(Long id, Long id_cliente, Long id_pedido, Long id_carinho, StatusPagamento status, Double valor) {
-        this.id = id;
+    public Transacao(Long id_cliente, Long id_pedido, Long id_carrinho, Double valor) {
         this.id_cliente = id_cliente;
         this.id_pedido = id_pedido;
-        this.id_carinho = id_carinho;
+        this.id_carrinho = id_carrinho;
+        this.valor = valor;
+    }
+
+    public Transacao(Long id_cliente, Long id_pedido, Long id_carrinho, StatusPagamento status, Double valor) {
+        this.id_cliente = id_cliente;
+        this.id_pedido = id_pedido;
+        this.id_carrinho = id_carrinho;
         this.status = status;
         this.valor = valor;
     }
@@ -57,12 +63,12 @@ public class Transacoes {
         this.id_pedido = id_pedido;
     }
 
-    public Long getId_carinho() {
-        return id_carinho;
+    public Long getId_carrinho() {
+        return id_carrinho;
     }
 
-    public void setId_carinho(Long id_carinho) {
-        this.id_carinho = id_carinho;
+    public void setId_carrinho(Long id_carrinho) {
+        this.id_carrinho = id_carrinho;
     }
 
     public StatusPagamento getStatus() {
@@ -85,7 +91,7 @@ public class Transacoes {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Transacoes that = (Transacoes) o;
+        Transacao that = (Transacao) o;
         return Objects.equals(id, that.id);
     }
 
