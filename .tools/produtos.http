@@ -27,3 +27,7 @@ Content-Type: application/json
   "idCliente": 1,
   "idsProdutos": [1,2,3]
 }
+
+### Buscar carrinho de pedido
+
+GET http://localhost:8080/carrinho/1

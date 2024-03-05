@@ -30,4 +30,13 @@ public class CarrinhoController {
         carrinhoRepository.save(carrinhoPedido);
         return ResponseEntity.ok(carrinhoPedido);
     }
+
+    @GetMapping("{id}")
+    public ResponseEntity buscarCarrinho(@PathVariable("id") Long id) {
+        CarrinhoPedido carrinhoPedido = carrinhoRepository.findById(id).orElse(null);
+        if (carrinhoPedido == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(carrinhoPedido);
+    }
 }
