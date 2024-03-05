@@ -2,7 +2,7 @@ package org.ecommerce.pedidos.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ecommerce.pedidos.domain.Pedido;
-import org.ecommerce.pedidos.domain.StatusPedido;
+import org.ecommerce.pedidos.enums.StatusPedido;
 import org.ecommerce.pedidos.dtos.CarrinhoDTO;
 import org.ecommerce.pedidos.repository.PedidoRepository;
 import org.springframework.dao.DataIntegrityViolationException;

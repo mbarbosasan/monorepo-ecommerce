@@ -1,4 +1,4 @@
-package org.ecommerce.pedidos.domain;
+package org.ecommerce.pedidos.enums;
 
 public enum StatusPedido {
     AGUARDANDO_PAGAMENTO,

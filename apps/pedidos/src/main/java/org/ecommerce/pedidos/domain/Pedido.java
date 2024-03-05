@@ -1,6 +1,7 @@
 package org.ecommerce.pedidos.domain;
 
 import jakarta.persistence.*;
+import org.ecommerce.pedidos.enums.StatusPedido;
 
 import java.util.Objects;
 
