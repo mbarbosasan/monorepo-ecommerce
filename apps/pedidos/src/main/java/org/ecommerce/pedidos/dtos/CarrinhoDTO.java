@@ -39,4 +39,14 @@ public class CarrinhoDTO {
     public void setValorTotal(Double valorTotal) {
         this.valorTotal = valorTotal;
     }
+
+    @Override
+    public String toString() {
+        return "CarrinhoDTO{" +
+                "id=" + id +
+                ", idCliente=" + idCliente +
+                ", produtos=" + produtos +
+                ", valorTotal=" + valorTotal +
+                '}';
+    }
 }
