@@ -11,10 +11,7 @@ public class QueueSender {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    @Autowired
-    private Queue queue;
-
-    public void send(String message) {
-        rabbitTemplate.convertAndSend(queue.getName(), message);
+    public void send(String message, String queueName) {
+        rabbitTemplate.convertAndSend(queueName, message);
     }
 }
