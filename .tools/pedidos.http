@@ -1,2 +1,2 @@
-POST http://localhost:8081/pedidos/2
+POST http://localhost:8081/pedidos/1
 Content-Type: application/json
