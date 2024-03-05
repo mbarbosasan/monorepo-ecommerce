@@ -3,6 +3,7 @@ package org.ecommerce.pedidos.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ecommerce.pedidos.domain.Pedido;
 import org.ecommerce.pedidos.dtos.CarrinhoDTO;
+import org.ecommerce.pedidos.dtos.PedidoDTO;
 import org.ecommerce.pedidos.enums.StatusPedido;
 import org.ecommerce.pedidos.exceptions.CarrinhoJaTemPedidoException;
 import org.ecommerce.pedidos.exceptions.CarrinhoNaoEncontradoException;
@@ -30,11 +31,13 @@ public class PedidoService {
 
     public void criarPedido(Long id) throws CarrinhoNaoEncontradoException, CarrinhoJaTemPedidoException {
         try {
-            CarrinhoDTO carrinho = buscaCarrinhoPorId(id);
-            Pedido pedido = new Pedido(carrinho.getId(), carrinho.getIdCliente(), StatusPedido.AGUARDANDO_PAGAMENTO);
+            CarrinhoDTO carrinhoDTO = buscaCarrinhoPorId(id);
+            Pedido pedido = new Pedido(carrinhoDTO.getId(), carrinhoDTO.getIdCliente(), StatusPedido.AGUARDANDO_PAGAMENTO);
             try {
-                pedidoRepository.save(pedido);
-                enviarParaPagamento(carrinho);
+                Pedido pedidoSaved = pedidoRepository.save(pedido);
+                PedidoDTO pedidoDTO = new PedidoDTO(pedidoSaved.getId(), pedidoSaved.getId_carrinho(), pedidoSaved.getId_cliente(), pedidoSaved.getStatus(), carrinhoDTO.getValorTotal());
+                pedidoDTO.setId(pedidoSaved.getId());
+                enviarParaPagamento(pedidoDTO);
             } catch (DataIntegrityViolationException e) {
                 throw new CarrinhoJaTemPedidoException("Erro ao salvar pedido");
             }
@@ -63,10 +66,10 @@ public class PedidoService {
         }
     }
 
-    private void enviarParaPagamento(CarrinhoDTO carrinhoDTO) {
+    private void enviarParaPagamento(PedidoDTO pedidoDTO) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            String carrinhoJSON = mapper.writeValueAsString(carrinhoDTO);
+            String carrinhoJSON = mapper.writeValueAsString(pedidoDTO);
             this.queueSender.send(carrinhoJSON);
         } catch (IOException e) {
             throw new RuntimeException(e);
