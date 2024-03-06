@@ -1,5 +1,6 @@
 package org.ecommerce.pedidos.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ecommerce.pedidos.domain.Pedido;
 import org.ecommerce.pedidos.dtos.CarrinhoDTO;
@@ -17,13 +18,13 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.logging.Logger;
 
 @Service
 public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
     private final QueueSender queueSender;
-
     public PedidoService(PedidoRepository pedidoRepository, QueueSender queueSender) {
         this.pedidoRepository = pedidoRepository;
         this.queueSender = queueSender;
@@ -38,6 +39,7 @@ public class PedidoService {
                 PedidoDTO pedidoDTO = new PedidoDTO(pedidoSaved.getId(), pedidoSaved.getId_carrinho(), pedidoSaved.getId_cliente(), pedidoSaved.getStatus(), carrinhoDTO.getValorTotal());
                 pedidoDTO.setId(pedidoSaved.getId());
                 enviarParaPagamento(pedidoDTO);
+                enviarEmailPedidoEfetuado(pedidoDTO);
             } catch (DataIntegrityViolationException e) {
                 throw new CarrinhoJaTemPedidoException("Erro ao salvar pedido");
             }
@@ -68,12 +70,24 @@ public class PedidoService {
 
     private void enviarParaPagamento(PedidoDTO pedidoDTO) {
         try {
+            System.out.println("Pedido recebido, enviando o pedido para pagamento");
             ObjectMapper mapper = new ObjectMapper();
             String carrinhoJSON = mapper.writeValueAsString(pedidoDTO);
-            this.queueSender.send(carrinhoJSON);
+            this.queueSender.send(carrinhoJSON, "pagamentos");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
+    }
+
+    private void enviarEmailPedidoEfetuado(PedidoDTO pedidoDTO) {
+        try {
+            System.out.println("Pedido recebido, enviando email de confirmação para o usuário");
+            ObjectMapper mapper = new ObjectMapper();
+            String carrinhoJSON = mapper.writeValueAsString(pedidoDTO);
+            this.queueSender.send(carrinhoJSON, "notificacoes");
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
