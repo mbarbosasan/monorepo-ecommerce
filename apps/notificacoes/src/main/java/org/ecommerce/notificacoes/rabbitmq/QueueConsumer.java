@@ -1,6 +1,10 @@
 package org.ecommerce.notificacoes.rabbitmq;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.ecommerce.notificacoes.enums.TipoNotificacao;
 import org.ecommerce.notificacoes.service.NotificacoesService;
+import org.ecommerce.pedidos.dtos.PedidoDTO;
+import org.ecommerce.pedidos.enums.StatusPedido;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +21,19 @@ public class QueueConsumer {
     @RabbitListener(queues = "${queue.name.notificacoes}")
     public void receive(String in) {
         System.out.println(" [x] Received '" + in + "'");
-        this.notificacoesService.sendEmail("moisesbarbosa23@gmail.com", "Compra realizada com sucesso", "Sua compra foi realizada com sucesso, obrigado por comprar conosco!");
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            PedidoDTO pedidoDTO = mapper.readValue(in, PedidoDTO.class);
+            if (pedidoDTO.getStatus() == StatusPedido.AGUARDANDO_PAGAMENTO) {
+                this.notificacoesService.sendEmail("moisesbarbosa23@gmail.com", TipoNotificacao.PEDIDO_RECEBIDO);
+            } else {
+                this.notificacoesService.sendEmail("moisesbarbosa23@gmail.com", TipoNotificacao.PAGAMENTO_APROVADO);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
