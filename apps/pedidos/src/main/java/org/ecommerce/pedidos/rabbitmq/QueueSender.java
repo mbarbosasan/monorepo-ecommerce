@@ -13,7 +13,7 @@ public class QueueSender {
     @Autowired
     private Queue queue;
 
-    public void send(String message) {
-        rabbitTemplate.convertAndSend(queue.getName(), message);
+    public void send(String message, String queue) {
+        rabbitTemplate.convertAndSend(queue, message);
     }
 }
