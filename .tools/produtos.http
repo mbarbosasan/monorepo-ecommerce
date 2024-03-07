@@ -24,7 +24,7 @@ POST http://localhost:8080/carrinho
 Content-Type: application/json
 
 {
-  "idCliente": 1,
+  "idCliente": 3,
   "idsProdutos": [1,2,3]
 }
 

@@ -20,15 +20,13 @@ public class QueueConsumer {
 
     @RabbitListener(queues = "${queue.name.notificacoes}")
     public void receive(String in) {
-        System.out.println(" [x] Received '" + in + "'");
-
         try {
             ObjectMapper mapper = new ObjectMapper();
             PedidoDTO pedidoDTO = mapper.readValue(in, PedidoDTO.class);
             if (pedidoDTO.getStatus() == StatusPedido.AGUARDANDO_PAGAMENTO) {
-                this.notificacoesService.sendEmail("moisesbarbosa23@gmail.com", TipoNotificacao.PEDIDO_RECEBIDO);
+                this.notificacoesService.sendEmail(pedidoDTO, TipoNotificacao.PEDIDO_RECEBIDO);
             } else {
-                this.notificacoesService.sendEmail("moisesbarbosa23@gmail.com", TipoNotificacao.PAGAMENTO_APROVADO);
+                this.notificacoesService.sendEmail(pedidoDTO ,TipoNotificacao.PAGAMENTO_APROVADO);
             }
         } catch (Exception e) {
             e.printStackTrace();

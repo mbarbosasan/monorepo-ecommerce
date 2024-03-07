@@ -1,4 +1,4 @@
 ### Criar pedido com id do carrinho e enviar para pagamento
 
-POST http://localhost:8081/pedidos/1
+POST http://localhost:8081/pedidos/2
 Content-Type: application/json
