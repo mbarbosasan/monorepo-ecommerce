@@ -8,8 +8,10 @@ import org.ecommerce.pedidos.dtos.PedidoDTO;
 import org.ecommerce.pedidos.enums.StatusPedido;
 import org.ecommerce.pedidos.exceptions.CarrinhoJaTemPedidoException;
 import org.ecommerce.pedidos.exceptions.CarrinhoNaoEncontradoException;
+import org.ecommerce.pedidos.exceptions.UsuarioNaoEncontradoException;
 import org.ecommerce.pedidos.rabbitmq.QueueSender;
 import org.ecommerce.pedidos.repository.PedidoRepository;
+import org.ecommerce.usuarios.domain.Usuario;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +20,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.logging.Logger;
 
 @Service
 public class PedidoService {
@@ -30,9 +31,11 @@ public class PedidoService {
         this.queueSender = queueSender;
     }
 
-    public void criarPedido(Long id) throws CarrinhoNaoEncontradoException, CarrinhoJaTemPedidoException {
+    public void criarPedido(Long id) throws CarrinhoNaoEncontradoException, CarrinhoJaTemPedidoException, UsuarioNaoEncontradoException {
         try {
             CarrinhoDTO carrinhoDTO = buscaCarrinhoPorId(id);
+            buscaUsuarioPorId(carrinhoDTO.getIdCliente());
+
             Pedido pedido = new Pedido(carrinhoDTO.getId(), carrinhoDTO.getIdCliente(), StatusPedido.AGUARDANDO_PAGAMENTO);
             try {
                 Pedido pedidoSaved = pedidoRepository.save(pedido);
@@ -46,6 +49,8 @@ public class PedidoService {
 
         } catch (CarrinhoNaoEncontradoException e) {
             throw new CarrinhoNaoEncontradoException(e.getMessage());
+        } catch (UsuarioNaoEncontradoException e) {
+            throw new UsuarioNaoEncontradoException(e.getMessage());
         }
 
     }
@@ -66,6 +71,28 @@ public class PedidoService {
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private Usuario buscaUsuarioPorId(Long id) throws UsuarioNaoEncontradoException, RuntimeException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8084/usuarios" + id))
+                .header("Content-Type", "application/json")
+                .GET()
+                .build();
+
+        try {
+            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() != 200) {
+                throw new UsuarioNaoEncontradoException("Usuário não encontrado");
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(response.body(), Usuario.class);
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     private void enviarParaPagamento(PedidoDTO pedidoDTO) {
