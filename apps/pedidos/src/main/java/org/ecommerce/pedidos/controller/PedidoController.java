@@ -2,6 +2,7 @@ package org.ecommerce.pedidos.controller;
 
 import org.ecommerce.pedidos.exceptions.CarrinhoJaTemPedidoException;
 import org.ecommerce.pedidos.exceptions.CarrinhoNaoEncontradoException;
+import org.ecommerce.pedidos.exceptions.UsuarioNaoEncontradoException;
 import org.ecommerce.pedidos.service.PedidoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,8 @@ public class PedidoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Já existe um pedido em andamento para esse carrinho.");
         } catch (CarrinhoNaoEncontradoException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Não foi possível encontrar o carrinho com o id informado, verifique se foi digitado corretamente ou tente novamente.");
+        } catch (UsuarioNaoEncontradoException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Não foi possível encontrar o usuário associado ao carrinho, verifique se foi digitado corretamente ou tente novamente.");
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Houve um erro interno ao tentar criar o pedido, tente novamente mais tarde.");
         }
