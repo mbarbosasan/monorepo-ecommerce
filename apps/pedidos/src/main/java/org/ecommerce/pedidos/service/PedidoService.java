@@ -75,7 +75,7 @@ public class PedidoService {
 
     private Usuario buscaUsuarioPorId(Long id) throws UsuarioNaoEncontradoException, RuntimeException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8084/usuarios" + id))
+                .uri(URI.create("http://localhost:8084/usuarios/" + id))
                 .header("Content-Type", "application/json")
                 .GET()
                 .build();
