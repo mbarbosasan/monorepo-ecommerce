@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: usuarios
+  labels:
+    app: usuarios
+spec:
+  containers:
+    - name: ecommerce-usuarios
+      image: mbarbosas/ecommerce-usuarios
+  restartPolicy: Always
+  

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: banco
+  labels:
+    app: banco
+spec:
+  containers:
+    - name: banco
+      image: postgres
+      imagePullPolicy: IfNotPresent
+      env:
+        - name: POSTGRES_PASSWORD
+          value: postgres
+  restartPolicy: Always
