@@ -5,3 +5,7 @@ Content-Type: application/json
     "nome": "João sem braço",
     "email": "seuemail@gmail.com"
 }
+
+###
+
+GET http://localhost:8084/usuarios/1
