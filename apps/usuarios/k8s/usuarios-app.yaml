@@ -7,6 +7,12 @@ metadata:
 spec:
   containers:
     - name: ecommerce-usuarios
-      image: mbarbosas/ecommerce-usuarios
+      image: mbarbosas/ecommerce-usuarios:0.0.2
+      livenessProbe:
+        httpGet:
+          path: /actuator/health
+          port: 8084
+        initialDelaySeconds: 30
+        periodSeconds: 10
   restartPolicy: Always
   
