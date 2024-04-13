@@ -1,8 +1,8 @@
 ## Camisetas "Lavou, Sumiu!"
 
-Projeto criado para a avaliação final do módulo de Microsserviços da minha pós-graduação em Arquitetura de Software.
+Projeto criado para a avaliação final do módulo de Microsserviços da minha pós-graduação em Arquitetura de Software e DevOps e Integração Contínua.
 
-Serão criados 4 microsserviços que tem as seguintes funcionalidades:
+Foram criados 4 microsserviços que tem as seguintes funcionalidades:
 * Usuarios
   * Criação de Usuários (*)
   * Busca de Usuários (*)
@@ -24,6 +24,14 @@ Serão criados 4 microsserviços que tem as seguintes funcionalidades:
   * Envio de Email (*)
 
 A princípio a comunicação entre os microsserviços será feita através do protocolo HTTP, com exceção do microsserviço de Notificação e Pagamentos que será feita através de mensageria com RabbitMQ.
+
+Infra:
+
+A prinícipio foi selecionado apenas a aplicação de Usuários para as seguintes funcionalidades:
+- Criação de Pod da aplicação
+- Criação de Pod do banco de dados (Postgres)
+- Monitoramento com Graphana e Prometheus
+- Criação de pipeline com Jenkins
 
 ## Tecnologias
 
