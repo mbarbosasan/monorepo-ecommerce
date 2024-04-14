@@ -19,3 +19,17 @@ spec:
       configMap:
         name: prometheus-config
   restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-service
+spec:
+    selector:
+        app: prometheus
+    ports:
+      - port: 9090
+        targetPort: 9090
+    clusterIP: 10.108.166.153
+    type: ClusterIP
