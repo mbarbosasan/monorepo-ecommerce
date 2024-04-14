@@ -1,18 +1,42 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: usuarios
   labels:
     app: usuarios
 spec:
-  containers:
-    - name: ecommerce-usuarios
-      image: mbarbosas/ecommerce-usuarios:0.0.2
-      livenessProbe:
-        httpGet:
-          path: /actuator/health
-          port: 8084
-        initialDelaySeconds: 30
-        periodSeconds: 10
-  restartPolicy: Always
-  
+  replicas: 4
+  selector:
+    matchLabels:
+      app: usuarios
+  template:
+    metadata:
+      labels:
+        app: usuarios
+    spec:
+      containers:
+      - name: ecommerce-usuarios
+        image: mbarbosas/ecommerce-usuarios:latest
+        ports:
+        - containerPort: 8084
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8084
+          initialDelaySeconds: 30
+          periodSeconds: 10
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: usuarios-service
+spec:
+  selector:
+    app: usuarios
+  ports:
+    - protocol: TCP
+      port: 8084
+      targetPort: 8084
+      nodePort: 30084
+  type: NodePort

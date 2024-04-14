@@ -13,3 +13,18 @@ spec:
         - name: POSTGRES_PASSWORD
           value: postgres
   restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: banco
+spec:
+  clusterIP: 10.108.166.152
+  selector:
+    app: banco
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP
