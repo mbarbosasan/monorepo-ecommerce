@@ -31,5 +31,4 @@ spec:
     ports:
       - port: 9090
         targetPort: 9090
-    clusterIP: 10.108.166.153
     type: ClusterIP
