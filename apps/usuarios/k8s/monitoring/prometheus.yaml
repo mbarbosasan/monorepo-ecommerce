@@ -1,4 +1,17 @@
 apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prometheus-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+
+apiVersion: v1
 kind: Pod
 metadata:
   name: prometheus
@@ -13,11 +26,16 @@ spec:
       volumeMounts:
         - name: config-volume
           mountPath: /etc/prometheus
+        - name: prometheus-storage
+          mountPath: /prometheus
       imagePullPolicy: IfNotPresent
   volumes:
     - name: config-volume
       configMap:
         name: prometheus-config
+    - name: prometheus-storage
+      persistentVolumeClaim:
+        claimName: prometheus-pvc
   restartPolicy: Always
 
 ---
